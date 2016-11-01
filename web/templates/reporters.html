@@ -1,0 +1,205 @@
+{% extends "layout.html" %}
+{% from 'layout.html' import navbar2, myscripts %}
+
+{% block title %}LLIN.::.Users{% endblock%}
+{% block stylesheets %}
+<link href="/static/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="/static/js/Buttons-1.1.2/css/buttons.dataTables.min.css" rel="stylesheet">
+{% endblock %}
+{% block nav %}
+    {% call navbar2() %}
+        <li><a href="/dashboard" class="">Dashboard</a></li>
+        <li><a href="/reporters" class="active">Reporters</a></li>
+        <li><a href="/distributionpoints" class="">Distribution Points</a></li>
+        <li><a href="/warehousedata" class="">Warehouse Log</a></li>
+        <li><a href="/dispatch" class="">Dispatch</a></li>
+       <li class="dropdown">
+           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Control Panel <b class="caret"></b></a>
+           <ul class="dropdown-menu">
+             <li><a href="/reports" class="">Reports</a></li>
+             <li class="divider"></li>
+             <li class="nav-header">Admin Panel</li>
+             <li><a href="/groups">Groups</a></li>
+             <li><a href="/users">Users</a></li>
+             <li><a href="/settings">Settings</a></li>
+           </ul>
+       </li>
+    {% endcall %}
+{% endblock %}
+
+{% block content %}
+<!-- BEGIN TEST -->
+
+<!-- END TEST -->
+
+
+    <div id="">
+    <fieldset>
+    <legend>Add/Edit Reporter</legend>
+    <form id="reporterForm" method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <table>
+            <tr>
+                <td>
+                    <table>
+                        <tr>
+                            <td><label for="district">District:</label></td>
+                            <td>
+                            <select name="district" id="district" class="" required>
+                                <option value="">Select District</option>
+                                {% for district in districts %}
+                                <option value="{{ district.id}}">{{ district.name}}</option>
+                                {% endfor %}
+                            </select>
+                            </td>
+                            </tr>
+                            <tr>
+                                <td><label for="subcounty">Sub County:</label></td>
+                                <td>
+                                    <select name="subcounty" id="subcounty" class="">
+                                        <option value="">Select Sub County</option>
+                                    </select>
+                            </td>
+                            </tr>
+                            <tr>
+                                <td><label for="parish">Parish:</label></td>
+                                <td>
+                                    <select name="parish" id="parish" class="">
+                                        <option value="">Select Parish</option>
+                                    </select>
+                            </td>
+                            </tr>
+
+                            <tr>
+                                <td><label for="village">Village:</label></td>
+                                <td>
+                                    <select name="village" id="village" class="">
+                                        <option value="">Select Village</option>
+                                    </select>
+                                    <input type="hidden" name="location" id="location"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="role">Role:</label></td>
+                                <td>
+                                    <select name="role" id="role" class="" required>
+                                        <option value="">Select Role</option>
+                                        {% for v in roles %}
+                                        <option value="{{ v.id }}" {% if v.name == role %} selected="yes" {% endif %}>{{ v.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="national_id">National ID:</label></td>
+                                <td><input name="national_id" id="national_id" type="text" value="{{ national_id }}" class=""/></td>
+                            </tr>
+                    </table>
+                </td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td>
+                    <table>
+                            <tr>
+                                <td><label for="firstname">First Name:</label></td>
+                                <td><input name="firstname" id="firstname" type="text" value="{{ firstname }}" class="" required/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="lastname">Last Name:</label></td>
+                                <td><input name="lastname" id="lastname" type="text" value="{{lastname }}" class="" required/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="tel">Telephone:</label></td>
+                                <td><input name="telephone" id="tel" pattern="^256(3[19]|41|7[015789])[0-9]{7}$"
+                                    data-minlength="9" placeholder="256782820208" type="text" value="{{ telephone }}" class="" required/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="email">Email:</label></td>
+                                <td><input name="email" id="email" type="email" value="{{ email }}"
+                                    pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$" class=""/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="dpoint">Distribution Point:</label></td>
+                                <td>
+                                    <select name="dpoint" id="dpoint" class="">
+                                        <option value="">Select Distribution Point</option>
+                                        {% if dpoint %}
+                                        <option value="{{ dpoint_id}}" selected="yes">{{ dpoint }}</option>
+                                        {% endif %}
+                                    </select>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                </td>
+                            </tr>
+                        </table>
+                </td>
+            </tr>
+        </table>
+
+    </form>
+    </fieldset>
+    </div>
+
+    <div class="tab-pane " id="users">
+        <table id="usertable" class="table table-condensed  table-striped table-bordered tablesorter">
+                <thead>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Telephone</th>
+                    <th>Role</th>
+                    <th>Email</th>
+                    <th>District</th>
+                    <th>Reporting Location</th>
+                    <th>Action</th>
+                </thead>
+                <tbody>
+                    {% for reporter in reporters %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ reporter.firstname }} &nbsp; {{ reporter.lastname }}</td>
+                            <td>{{ reporter.telephone }}</td>
+                            <td>{{ reporter.role }}</td>
+                            <td>{{ reporter.email }}</td>
+                            <td>{{ reporter.district }}</td>
+                            <td>{{ reporter.loc_name }}</td>
+                            <td>
+                                <a href="/reporters?ed={{ reporter.id }}" class="" value={{ reporter.id }}><i class="icon-edit"></i></a>
+                                                    &nbsp;&nbsp;&nbsp;
+                                <a href="/reporters?d_id={{ reporter.id }}&page={{ page }}" class="gwe" value={{ reporter.id }}><i class="icon-remove"></i></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+
+        </table>
+    </div>
+{% endblock %}
+{% block scripts%}
+    {% call myscripts() %}
+        <script type="text/javascript" src="/static/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" src="/static/js/Buttons-1.1.2/js/dataTables.buttons.min.js"></script>
+        <script type="text/javascript" src="/static/js/Buttons-1.1.2/js/buttons.flash.min.js"></script>
+        <script type="text/javascript" src="/static/js/jszip.min.js"></script>
+        <script type="text/javascript" src="/static/js/pdfmake.min.js"></script>
+        <script type="text/javascript" src="/static/js/vfs_fonts.js"></script>
+        <script type="text/javascript" src="/static/js/Buttons-1.1.2/js/buttons.html5.min.js"></script>
+        <script type="text/javascript" src="/static/js/Buttons-1.1.2/js/buttons.print.min.js"></script>
+        <script src="/static/js/bootstrap-validator/dist/validator.min.js"></script>
+        <script src="/static/js/reporters.js"></script>
+        <script>
+        $(document).ready(function() {
+            $("#usertable").DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            });
+            $('#reporterForm').validator()
+        });
+        </script>
+    {% endcall %}
+{% endblock %}

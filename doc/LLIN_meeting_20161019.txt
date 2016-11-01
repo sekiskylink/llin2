@@ -1,0 +1,47 @@
+Operation Sub committee
+=======================
+1. What the system can produce an the anticipated risks raised.
+How the system will take care of certain process
+tracing of data from the village...
+acutual = households and number of people there in
+Check inflation by households or number of people in the households
+aprox 230 subcounties in wave 1 -> 600 data entrants
+3 data entrants per sub county (690 yet we have 600)
+lowest wave has 18 districts
+management of the tasks of the data entrants
+- receipt of data from the sub county supervisors, allocation to entrants -> making sure that there is a check
+- there has to be double entry, but for 6% (just to counter check)
+    to ensure that the data is representative of the situation on the ground.
+    people entering data will be more accurate knowing sb will double check the data.
+
+    we can do another quality check on the 100% - say 4% of the entire data set
+    ( re-register households,
+
+- database will have to produce 2 reports required by AMF
+    -> variance checks done by the 105%
+        variance check for the quality of the data entry, error rate
+    -> clear action on what has been done - corrective actions
+
+    At the point variances are identified, we get a third person to make changes for what was  entered and then there should be a record that it was changed. Then the process rerun again if any issues.
+
+    Indexing, the ability to know the village from which the paper is coming from and the VHT who captured it and the village - traceability.
+    Hardcopy should have a document trail within the system.
+    Components of registration forms pre-entered on the mtrac side.
+        -> VHT texts in the serial number of the registration form. (Pick the Village, Parish, Subcounty, etc)
+    Verify with what in the system against what registration form have arried (in the box file) using these serial numbers.
+    You can even know who's forms have not arrived.
+
+    Take note of the time we have, whatever we're adding shouldn't slow the system. Keep within scope and scale
+
+    We need to find a way to acknowledge receipt of the registration forms.
+    Is there a way of determining the average rate of entry of data per form (it will take this much time to capture this data) _ being able to estimate the time it takes to capture the data.
+    Have an exercise to establish how much time to capture the data ( say 10 guys capture 5 forms each and we use it to estimate) Experimental way to establish this could suffice the rate of data capture (average time) - Douglous Onyango to design the activity
+
+    Error rate - is by entrant - a potential cause for loss of time
+    Data entrants with high error propagation are to be replaced.
+    Given comming workload, one can estimate the time to capture the entire dataset
+
+    All entered forms must be returned and archived to ensure no mix up.
+
+    There should be somebody dispatching the workload - it is signed for and once it is taken and worked on as well
+

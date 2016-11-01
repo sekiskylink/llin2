@@ -1,0 +1,212 @@
+{% extends "layout.html" %}
+{% block title %}LLIN.::.Reports{% endblock%}
+{% block stylesheets %}
+<link href="/static/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="/static/js/Buttons-1.1.2/css/buttons.dataTables.min.css" rel="stylesheet">
+<style>
+.stats {
+    width: 100%;
+    display: table;
+    padding: 0 0 0 10px;
+    margin-top: .5em;
+    margin-bottom: 1.9em;
+}
+
+.stats .stat {
+    display: table-cell;
+    width: 40%;
+    vertical-align: top;
+
+    font-size: 11px;
+    font-weight: bold;
+    color: #999;
+}
+
+.stat-value {
+    display: block;
+    margin-bottom: .55em;
+
+    font-size: 30px;
+    font-weight: bold;
+    letter-spacing: -2px;
+    color: #444;
+}
+</style>
+{% endblock %}
+{% from 'layout.html' import navbar2, myscripts, err %}
+
+{% block nav %}
+    {% call navbar2() %}
+        {% if ses.loggedin %}
+        <li><a href="/smslogs">SMS Logs</a></li>
+        <li><a href="/reports" class="active">Reports</a></li>
+       <li class="dropdown">
+           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Control Panel <b class="caret"></b></a>
+           <ul class="dropdown-menu">
+             <li><a href="/smslogs">SMS Logs</a></li>
+             <li><a href="/reports" class="active">Reports</a></li>
+             <li class="divider"></li>
+             <li class="nav-header">Admin Panel</li>
+             <li><a href="/users">Users</a></li>
+             <li><a href="/settings">Settings</a></li>
+           </ul>
+       </li>
+        {% endif %}
+    {% endcall %}
+{% endblock %}
+
+{%block content %}
+    {{ err(err_msg) }}
+    {#
+    <form name="p" method="post" action="">
+        <fieldset>
+        <legend>Add/Edit Activity</legend>
+        <table>
+            <tr><td>Name:</td><td><input name="name" value="{{ name }}" type="text" class=""/></td></tr>
+            <tr><td>Description:</td><td><textarea name="descr" type="text" class="">{{ descr }}</textarea></td></tr>
+            <tr><td></td><td><input name="submit" value="Save" type="submit" class="btn" /></td></tr>
+        </table>
+    </form>
+    #}
+    <div id="graph">
+    </div>
+    <br/>
+   <ul class="nav nav-tabs">
+        <li><a href="#contacts" data-toggle="tab">Contacts</a></li>
+        <li><a href="#groups" data-toggle="tab">Groups</a></li>
+        <li><a href="#campaigns" data-toggle="tab">Campaigns</a></li>
+        <li><a href="#flows" data-toggle="tab">Flows</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane active" id="contacts">
+            <br/>
+            <!--
+            <div class="stat">
+                Total HIWA Contacts
+                <span class="stat-value">{{ total_contacts }}</span>
+            </div> -->
+            <div class="page-header">
+                <h2>{{ total_contacts }} <small> Total HIWA Contacts</small></h2>
+            </div>
+            <form class="form-search">
+                <label class="text inline">
+                    Break Down by:
+                    <select name="contact_field" id="contact_field">
+                        <option value="">Select Field</option>
+                        {% for f in contact_fields %}
+                            <option value="{{f.label}}">{{ f.label }}</option>
+                        {% endfor %}
+                    <select>
+                  </label>
+            </form>
+            <div id="contact-res">
+            </div>
+        </div>
+
+        <div class="tab-pane " id="groups">
+
+             <!--<table class="table table-condensed" style="padding-bottom: 0px; margin-bottom:0px; border-bottom:none;
+            background-color:#333333;color:ffffff;">
+            <tr><th style="color:#fff">Group Metrics .::. Total Groups = {{ res | count }}</th><th></th></tr>
+        </table>-->
+            <div class="page-header">
+                <h1>{{ res|length }} <small>Groups</small></h1>
+            </div>
+            <table id="gtable" style="width:100%" class=" row-border table table-striped table-condensed table-bordered tablesorter">
+                <thead>
+                    <th>#</th>
+                    <th>Group Name</th>
+                    <th>No. of Contacts</th>
+                    <th>Proportion (%age)</th>
+                    <th>Details</th>
+                </thead>
+                <tbody>
+                {% for l in res %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ l.name }}</td>
+                        <td>{{ l.count }}</td>
+                        <td>{{ '%0.2f'| format((l.count / total_contacts) * 100) }}%</td>
+                        <td></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane" id="campaigns">
+            <div class="page-header">
+                <h1>{{ campaigns|length }} <small>Campaigns</small></h1>
+            </div>
+            <table id="camptable" style="width:100%" class=" row-border table table-striped table-condensed table-bordered tablesorter">
+                <thead>
+                    <th>#</th>
+                    <th>Campaign Name</th>
+                    <th>No. of Events</th>
+                    <th>No. of Messages</th>
+                    <th>Group</th>
+                    <th>Duration</th>
+                    <th>Messages Sent</th>
+                    <th>Completed By (Contacts)</th>
+                    <th>Contacts In</th>
+                    <th>Action</th>
+                </thead>
+                <tbody>
+                    {% for c in campaigns %}
+                        <tr>
+                            <td>{{ loop.index}}</td>
+                            <td>{{ c.name }}</td>
+                            <td>{{ c.events }}</td>
+                            <td>{{ c.msg_events }}</td>
+                            <td>{{ c.group_name }}</td>
+                            <td>{{ c.duration }}</td>
+                            <td>{{ c.sent_sms }}</td>
+                            <td>{{ c.completed_by }}</td>
+                            <td>{{ c.currently_in }}</td>
+                            <td>
+                                <a href="/reports" class="stat" value={{ c.id }}><i class="icon-signal"></i></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane" id="flows">
+        </div>
+    </div>
+
+
+
+{% endblock %}
+
+{% block scripts %}
+    {% call myscripts() %}
+    <script type="text/javascript" src="/static/js/highcharts.js"></script>
+    <script type="text/javascript" src="/static/js/exporting.js"></script>
+    <script src="/static/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="/static/js/Buttons-1.1.2/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="/static/js/Buttons-1.1.2/js/buttons.flash.min.js"></script>
+    <script type="text/javascript" src="/static/js/jszip.min.js"></script>
+    <script type="text/javascript" src="/static/js/pdfmake.min.js"></script>
+    <script type="text/javascript" src="/static/js/vfs_fonts.js"></script>
+    <script type="text/javascript" src="/static/js/Buttons-1.1.2/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" src="/static/js/Buttons-1.1.2/js/buttons.print.min.js"></script>
+    <script src="/static/js/reports.js"></script>
+    <script>
+        $(document).ready(function() {
+        $("#gtable").DataTable({
+           dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        });
+        $("#camptable").DataTable({
+           dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        });
+        });
+    </script>
+    {% endcall %}
+{% endblock %}

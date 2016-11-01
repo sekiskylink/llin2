@@ -1,0 +1,190 @@
+{% extends "layout.html" %}
+{% from 'layout.html' import navbar2, myscripts %}
+
+{% block title %}LLIN.::.Warehouse{% endblock%}
+{% block stylesheets %}
+<link href="/static/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="/static/js/Buttons-1.1.2/css/buttons.dataTables.min.css" rel="stylesheet">
+{% endblock %}
+{% block nav %}
+    {% call navbar2() %}
+        <li><a href="/dashboard" class="">Dashboard</a></li>
+        <li><a href="/reporters" class="">Reporters</a></li>
+        <li><a href="/distributionpoints" class="">Distribution Points</a></li>
+        <li><a href="/warehousedata" class="active">Warehouse Log</a></li>
+        <li><a href="/dispatch" class="">Dispatch</a></li>
+       <li class="dropdown">
+           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Control Panel <b class="caret"></b></a>
+           <ul class="dropdown-menu">
+             <li><a href="/reports" class="active">Reports</a></li>
+             <li class="divider"></li>
+             <li class="nav-header">Admin Panel</li>
+             <li><a href="/groups">Groups</a></li>
+             <li><a href="/users">Users</a></li>
+             <li><a href="/settings">Settings</a></li>
+           </ul>
+       </li>
+    {% endcall %}
+{% endblock %}
+
+{% block content %}
+    <div id="">
+        <filedset>
+        <legend>National LLIN Delivery Log</legend>
+    <form name="" method="post" action="">
+        <table>
+            <tr>
+                <td>
+                    <table>
+            <tr>
+                <td><label for="po_number">PO Number:</label></td>
+                <td><input name="po_number" id="po_number" type="text" value="{{ po_number }}" class="" required /></td>
+            </tr>
+            <tr>
+                <td><label for="funding_source">Funding Source:</label></td>
+                <td><input name="funding_source" id="funding_source" type="text" value="{{ funding_source }}" class="" required /></td>
+            </tr>
+            <tr>
+                <td><label for="manufacturer">Manufacturer:</label></td>
+                <td><input name="manufacturer" id="manufacturer" type="text" value="{{ manufacturer }}" class="" required/></td>
+            </tr>
+            <tr>
+                <td><label for="made_in">Made In:</label></td>
+                <td>
+                    <select name="made_in" id="made_in" required>
+                        <option value="">Select Country</option>
+                        {% for c in countries%}
+                            <option value="{{c.id}}">{{ c.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="batch_number">Batch Number:</label></td>
+                <td><input name="batch_number" id="batch_number" type="text" value="{{ batch_number }}" class="" required /></td>
+            </tr>
+            <tr>
+                <td><label for="net_type">Net Type:</label></td>
+                <td>
+                    <select name="net_type" id="net_type" required>
+                        <option value="">Select Net Type</option>
+                        <option value="Polyester">Polyester</option>
+                        <option value="Polyethylene">Polyethylene</option>
+                        <option value="Polypropylene">Polypropylene</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="quantity">Quantity:</label></td>
+                <td><input name="quantity" id="quantity" type="text" class="" required/></td>
+            </tr>
+            <tr>
+                <td><label for="waybill">Waybill:</label></td>
+                <td><input name="waybill" id="waybill" type="text" value="{{waybill }}" class="" required /></td>
+            </tr>
+        </table>
+                </td>
+                <td></td>
+                <td></td>
+                <td>
+                <table>
+            <tr>
+                <td><label for="warehouse">Warehouse Name:</label></td>
+                <td><input name="warehouse" id="warehouse" type="text" value="{{ warehouse }}" class="" required/></td>
+            </tr>
+            <tr>
+                <td><label for="entry_date">Date of Entry:</label></td>
+                <td><input name="entry_date" id="entry_date" type="date" value="{{ entry_date }}" class="" required/></td>
+            </tr>
+            <tr>
+                <td><label for="nda_sampling_date">Date of NDA Sampling:</label></td>
+                <td><input name="nda_sampling_date" id="nda_sampling_date" type="date" value="{{ nda_sampling_date }}" class="" required /></td>
+            </tr>
+            <tr>
+                <td><label for="nda_conditional_release_date">Date of NDA Conditional Release:</label></td>
+                <td><input name="nda_conditional_release_date" id="nda_conditional_release_date"
+                    type="date" value="{{ nda_conditional_release_date}}" class="" required/></td>
+            </tr>
+            <tr>
+                <td><label for="nda_testing_result_date">Date of NDA Testing Result:</label></td>
+                <td><input name="nda_testing_result_date" id="nda_testing_result_date" type="date"
+                    value="{{ nda_testing_result_date }}" class="" required/></td>
+            </tr>
+            <tr>
+                <td><label for="unbs_sampling_date">Date of UNBS Sampling:</label></td>
+                <td><input name="unbs_sampling_date" id="unbs_sampling_date" type="date" value="{{ unbs_sampling_date }}" class="" required/></td>
+            </tr>
+             <tr>
+                <td><label for="remarks">Remarks:</label></td>
+                <td><textarea name="remarks" id="remarks" value="{{ remarks }}" class=""></textarea></td>
+            </tr>
+
+            <tr>
+                <td></td>
+                <td><input name="submit" type="submit" value="Save" class="btn" /></td>
+            </tr>
+        </table>
+                </td>
+            </tr>
+        </table>
+
+    </form>
+    </fieldset>
+    </div>
+
+    <div class="tab-pane " id="users">
+        <table id="usertable" class="table table-condensed  table-striped table-bordered tablesorter">
+                <thead>
+                    <th>#</th>
+                    <th>PO Number</th>
+                    <th>Funding Source</th>
+                    <th>Manufacturer</th>
+                    <th>Made In</th>
+                    <th>Quantity</th>
+                    <th>Waybill</th>
+                    <th>Warehouse</th>
+                    <th>Action</th>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ user.firstname }} &nbsp; {{ user.lastname }}</td>
+                            <td>{{ user.telephone }}</td>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.user_role }}</td>
+                            <td>
+                                <a href="/users?ed={{ user.id }}" class="" value={{ user.id }}><i class="icon-edit"></i></a>
+                                                    &nbsp;&nbsp;&nbsp;
+                                <a href="/users?d_id={{ user.id }}&page={{ page }}" class="gwe" value={{ user.id }}><i class="icon-remove"></i></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+
+        </table>
+    </div>
+{% endblock %}
+{% block scripts%}
+    {% call myscripts() %}
+        <script type="text/javascript" src="/static/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" src="/static/js/Buttons-1.1.2/js/dataTables.buttons.min.js"></script>
+        <script type="text/javascript" src="/static/js/Buttons-1.1.2/js/buttons.flash.min.js"></script>
+        <script type="text/javascript" src="/static/js/jszip.min.js"></script>
+        <script type="text/javascript" src="/static/js/pdfmake.min.js"></script>
+        <script type="text/javascript" src="/static/js/vfs_fonts.js"></script>
+        <script type="text/javascript" src="/static/js/Buttons-1.1.2/js/buttons.html5.min.js"></script>
+        <script type="text/javascript" src="/static/js/Buttons-1.1.2/js/buttons.print.min.js"></script>
+        <script>
+        $(document).ready(function() {
+            $("#usertable").DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            });
+        });
+        </script>
+    {% endcall %}
+{% endblock %}

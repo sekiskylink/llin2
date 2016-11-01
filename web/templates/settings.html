@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block title %}LLIN.::.Settings{% endblock %}
+{% from 'layout.html' import navbar2, myscripts %}
+
+{% block nav %}
+    {% call navbar2() %}
+        <li><a href="/dashboard" class="">Dashboard</a></li>
+        <li><a href="/reporters" class="">Reporters</a></li>
+        <li><a href="/distributionpoints" class="">Distribution Points</a></li>
+        <li><a href="/warehousedata" class="">Warehouse Log</a></li>
+        <li><a href="/dispatch" class="">Dispatch</a></li>
+       <li class="dropdown">
+           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Control Panel <b class="caret"></b></a>
+           <ul class="dropdown-menu">
+                <li><a href="/reports">Reports</a></li>
+                <li class="divider"></li>
+                <li class="nav-header">Admin Panel</li>
+                <li><a href="/users">Groups</a></li>
+                <li><a href="/users">Users</a></li>
+                <li><a href="/settings" class="active">Settings</a></li>
+           </ul>
+       </li>
+    {% endcall %}
+{% endblock %}
+{% block contens %}
+    <form name="" method="post" action="">
+
+    </form>
+{% endblock %}
+{% block scripts %}
+    {% call myscripts() %}
+    {% endcall %}
+{% endblock %}

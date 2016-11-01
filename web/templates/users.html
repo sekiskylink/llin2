@@ -1,0 +1,176 @@
+{% extends "layout.html" %}
+{% from 'layout.html' import navbar2, myscripts %}
+
+{% block title %}LLIN.::.Users{% endblock%}
+{% block stylesheets %}
+<link href="/static/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="/static/js/Buttons-1.1.2/css/buttons.dataTables.min.css" rel="stylesheet">
+{% endblock %}
+{% block nav %}
+    {% call navbar2() %}
+        <li><a href="/dashboard" class="">Dashboard</a></li>
+        <li><a href="/reporters" class="">Reporters</a></li>
+        <li><a href="/distributionpoints" class="">Distribution Points</a></li>
+        <li><a href="/warehousedata" class="">Warehouse Log</a></li>
+        <li><a href="/dispatch" class="">Dispatch</a></li>
+       <li class="dropdown">
+           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Control Panel <b class="caret"></b></a>
+           <ul class="dropdown-menu">
+             <li><a href="/smslogs">SMS Logs</a></li>
+             <li><a href="/reports" class="active">Reports</a></li>
+             <li class="divider"></li>
+             <li class="nav-header">Admin Panel</li>
+             <li><a href="/groups">Groups</a></li>
+             <li><a href="/users">Users</a></li>
+             <li><a href="/settings">Settings</a></li>
+           </ul>
+       </li>
+    {% endcall %}
+{% endblock %}
+
+{% block content %}
+    <div id="" class="form-group">
+    <fieldset>
+        <legend>Add/Edit User</legend>
+    <form role="form" method="post" action="" data-toggle="validator">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <table>
+            <tr>
+                <td>
+                    <table>
+                        <tr>
+                            <td><label for="user_role">User Group:</label></td>
+                            <td>
+                                <select name="user_role" id="user_role" required>
+                                    <option value="">Select Group</option>
+                                    {% for role in roles %}
+                                        <option value="{{ role.id }}">{{ role.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="firstname">First Name:</label></td>
+                            <td><input name="firstname" id="firstname" type="text" value="{{ firstname }}" class="form-control" required /></td>
+                        </tr>
+                        <tr>
+                            <td><label for="lastname">Last Name:</label></td>
+                            <td><input name="lastname" id="lastname" type="text" value="{{lastname }}" class="form-control" required /></td>
+                        </tr>
+                        <tr>
+                            <td><label for="tel">Telephone:</label></td>
+                            <td><input name="telephone" id="tel" pattern="^\+?256(3[19]|41|7[015789])[0-9]{7}$"
+                                placeholder="+256782820208" type="text" value="{{ telephone }}" class="form-control" required /></td>
+                        </tr>
+                        <tr>
+                            <td><label for="email">Email:</label></td>
+                            <td><input name="email" id="email" type="text" value="{{ email }}" class="form-control"
+                                pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$" required /></td>
+                        </tr>
+                    </table>
+                </td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td>
+                    <table>
+                        <tr>
+                            <td><label for="username">Username:</label></td>
+                            <td><input name="username" id="username" type="text" value="{{ username }}" class="form-control" required /></td>
+                        </tr>
+                        <tr>
+                            <td><label for="passwd">Password:</label></td>
+                            <td><input name="passwd" id="passwd" type="password" class="form-control"
+                                data-error="Minimum of 6 characters" pattern="^.{6,}$"  required /></td>
+                        </tr>
+                        <tr>
+                            <td><label for="cpasswd">Confirm Password:</label></td>
+                            <td><input name="cpasswd" id="cpasswd" type="password" class="" data-match="#passwd" data-minlength="6" required /></td>
+                        </tr>
+                        {% if ses.role == 'Administrator' %}
+                        <tr>
+                            <td><label for="is_active">Is Active:</label></td>
+                            <td><input name="is_active" id="is_active" type="checkbox"
+                                {% if is_active == True %}
+                                    checked = "yes"
+                                {% endif %}
+                                class="" /></td>
+                        </tr>
+                        <tr>
+                            <td><label for="is_super">Is Administrator:</label></td>
+                            <td><input name="is_super" id="is_super" type="checkbox"
+                                {% if is_super == True %}
+                                    checked = "yes"
+                                {% endif %}
+                                class="" /></td>
+                        </tr>
+                        {% endif %}
+                        <tr>
+                            <td></td>
+                            <td>
+                                <button type="submit" class="btn btn-primary">Save</button>
+                                <!--<input name="submit" type="submit" value="Save" class="btn" />-->
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+    </form>
+    </fieldset>
+    </div>
+
+    <div class="tab-pane " id="users">
+        <table id="usertable" class="table table-condensed  table-striped table-bordered tablesorter">
+                <thead>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Telephone</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Action</th>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ user.firstname }} &nbsp; {{ user.lastname }}</td>
+                            <td>{{ user.telephone }}</td>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.role }}</td>
+                            <td>
+                                <a href="/users?ed={{ user.id }}" class="" value={{ user.id }}><i class="icon-edit"></i></a>
+                                                    &nbsp;&nbsp;&nbsp;
+                                <a href="/users?d_id={{ user.id }}&page={{ page }}" class="gwe" value={{ user.id }}><i class="icon-remove"></i></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+
+        </table>
+    </div>
+{% endblock %}
+{% block scripts%}
+    {% call myscripts() %}
+        <script type="text/javascript" src="/static/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" src="/static/js/Buttons-1.1.2/js/dataTables.buttons.min.js"></script>
+        <script type="text/javascript" src="/static/js/Buttons-1.1.2/js/buttons.flash.min.js"></script>
+        <script type="text/javascript" src="/static/js/jszip.min.js"></script>
+        <script type="text/javascript" src="/static/js/pdfmake.min.js"></script>
+        <script type="text/javascript" src="/static/js/vfs_fonts.js"></script>
+        <script type="text/javascript" src="/static/js/Buttons-1.1.2/js/buttons.html5.min.js"></script>
+        <script type="text/javascript" src="/static/js/Buttons-1.1.2/js/buttons.print.min.js"></script>
+        <script src="/static/js/bootstrap-validator/dist/validator.min.js"></script>
+        <script>
+        $(document).ready(function() {
+            $("#usertable").DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            });
+        });
+        </script>
+    {% endcall %}
+{% endblock %}

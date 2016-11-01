@@ -1,0 +1,161 @@
+{% extends "layout.html" %}
+{% from 'layout.html' import navbar2, myscripts %}
+
+{% block title %}LLIN.::.Dpoints{% endblock%}
+{% block stylesheets %}
+<link href="/static/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="/static/js/Buttons-1.1.2/css/buttons.dataTables.min.css" rel="stylesheet">
+{% endblock %}
+{% block nav %}
+    {% call navbar2() %}
+        <li><a href="/dashboard" class="">Dashboard</a></li>
+        <li><a href="/reporters" class="">Reporters</a></li>
+        <li><a href="/distributionpoints" class="active">Distribution Points</a></li>
+        <li><a href="/warehousedata" class="">Warehouse Log</a></li>
+        <li><a href="/dispatch" class="">Dispatch</a></li>
+       <li class="dropdown">
+           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Control Panel <b class="caret"></b></a>
+           <ul class="dropdown-menu">
+             <li><a href="/reports" class="">Reports</a></li>
+             <li class="divider"></li>
+             <li class="nav-header">Admin Panel</li>
+             <li><a href="/groups">Groups</a></li>
+             <li><a href="/users">Users</a></li>
+             <li><a href="/settings">Settings</a></li>
+           </ul>
+       </li>
+    {% endcall %}
+{% endblock %}
+
+{% block content %}
+<!-- BEGIN TEST -->
+
+<!-- END TEST -->
+
+
+    <div id="">
+    <fieldset>
+    <legend>Add/Edit Distribution Points</legend>
+    <form id="dpointForm" method="post" data-toggle="validator">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <table>
+                <tr>
+                    <td><label for="district">District:</label></td>
+                    <td>
+                    <select name="district" id="district" class="" required>
+                        <option value="">Select District</option>
+                        {% for d in districts %}
+                        <option value="{{ d.id}}" {%if d.name == district %} selected="yes" {% endif %}>{{ d.name}}</option>
+                        {% endfor %}
+                    </select>
+                    </td>
+                    </tr>
+                    <tr>
+                        <td><label for="subcounty">Sub County:</label></td>
+                        <td>
+                            <select name="subcounty" id="subcounty" class="" required>
+                                <option value="">Select Sub County</option>
+                                {% if subcounty %}
+                                    <option value="{{ subcounty}}" selected="yes">{{ subcounty_name }}</option>
+                                {% endif %}
+                            </select>
+                    </td>
+                    </tr>
+
+                    <tr>
+                        <td><label for="villages">Villages:</label></td>
+                        <td>
+                            <select name="villages" id="villages" multiple="multiple" required>
+                                {% if villages %}
+                                    {% for v in villages %}
+                                        <option value="{{ v.id }}">{{ v.name }}</option>
+                                    {% endfor%}
+                                {% else %}
+                                <optgroup label="Parish A">
+                                    <option value="">Village 1</option>
+                                    <option value="">Village 2</option>
+                                    <option value="">Village 3</option>
+                                </optgroup>
+                                <optgroup label="Parish B">
+                                    <option value="">Village 4</option>
+                                    <option value="">Village 5</option>
+                                    <option value="">Village 6</option>
+                                </optgroup>
+                                <optgroup label="Parish C">
+                                    <option value="">Village 7</option>
+                                    <option value="">Village 8</option>
+                                    <option value="">Village 9</option>
+                                </optgroup>
+                                {% endif %}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label for="name">Name:</label></td>
+                        <td><input name="name" id="name" type="text" value="{{ name }}" class="" required/></td>
+                    </tr>
+
+                    <tr>
+                        <td></td>
+                        <td>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </td>
+                    </tr>
+        </table>
+
+    </form>
+    </div>
+
+    <div class="tab-pane " id="users">
+        <table id="usertable" class="table table-condensed  table-striped table-bordered tablesorter">
+                <thead>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Sub County</th>
+                    <th>Villages</th>
+                    <th>Action</th>
+                </thead>
+                <tbody>
+                    {% for d in dpoints %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ d.name }} </td>
+                            <td>{{ d.subcounty }}</td>
+                            <td>{{ d.villages }}</td>
+                            <td>
+                                <a href="/distributionpoints?ed={{ d.id }}" class="" value={{ d.id }}><i class="icon-edit"></i></a>
+                                                    &nbsp;&nbsp;&nbsp;
+                                <a href="/distributionpoints?d_id={{d.id }}&page={{ page }}"  class="gwe" value={{ d.id }}><i class="icon-remove"></i></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+
+        </table>
+    </div>
+{% endblock %}
+{% block scripts%}
+    {% call myscripts() %}
+        <script type="text/javascript" src="/static/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" src="/static/js/Buttons-1.1.2/js/dataTables.buttons.min.js"></script>
+        <script type="text/javascript" src="/static/js/Buttons-1.1.2/js/buttons.flash.min.js"></script>
+        <script type="text/javascript" src="/static/js/jszip.min.js"></script>
+        <script type="text/javascript" src="/static/js/pdfmake.min.js"></script>
+        <script type="text/javascript" src="/static/js/vfs_fonts.js"></script>
+        <script type="text/javascript" src="/static/js/Buttons-1.1.2/js/buttons.html5.min.js"></script>
+        <script type="text/javascript" src="/static/js/Buttons-1.1.2/js/buttons.print.min.js"></script>
+        <script src="/static/js/bootstrap-validator/dist/validator.min.js"></script>
+        <script src="/static/js/dpoints.js"></script>
+        <script>
+        $(document).ready(function() {
+            $("#usertable").DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            });
+            $('#reporterForm').validator()
+        });
+        </script>
+    {% endcall %}
+{% endblock %}

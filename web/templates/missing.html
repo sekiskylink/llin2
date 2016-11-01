@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block title %}LLIN.::.Ready{% endblock%}
+{% block stylesheets %}
+    <style type="text/css">
+    .not-found-404 { text-align: center; overflow: hidden; margin-bottom: 60px;}
+    .not-found-404 h2 { font-size: 180px; margin: 30px 0; line-height: 180px;}
+    .not-found-404 p { font-size: 28px; color: #9a9a9a; margin-bottom: 40px !important; line-height: 32px;}
+    </style>
+{% endblock %}
+{% from 'layout.html' import navbar2, myscripts, err %}
+
+{% block nav %}
+    {% call navbar2() %}
+
+    {% endcall %}
+{% endblock %}
+
+{%block content %}
+    {{ err(err_msg) }}
+    <div class="not-found-404">
+        <h2>404<i class="iscon-remove-sign skin-text"></i></h2>
+        <p>We're sorry, but the page you were looking for doesn't exist.</p>
+
+    </div>
+{% endblock %}
+

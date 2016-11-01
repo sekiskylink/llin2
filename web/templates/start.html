@@ -1,0 +1,100 @@
+{% extends "layout.html" %}
+{% from 'layout.html' import navbar2, myscripts, err %}
+
+{% block title %}LLIN.::.Home{% endblock%}
+{% block stylesheets %}
+<style type="text/css">
+   body {
+     padding-bottom: 40px;
+     background-color: #f5f5f5;
+   }
+
+   .form-signin {
+     max-width: 450px;
+     padding: 19px 29px 29px;
+     margin: -20px auto 20px;
+     background-color: #fff;
+     border: 1px solid #e5e5e5;
+     -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+             border-radius: 5px;
+     -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+        -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+             box-shadow: 0 1px 2px rgba(0,0,0,.05);
+   }
+   .form-signin .form-signin-heading,
+   .form-signin .checkbox {
+     margin-bottom: 10px;
+   }
+   .form-signin input[type="text"],
+   .form-signin input[type="password"] {
+     font-size: 16px;
+     height: auto;
+     margin-bottom: 15px;
+     padding: 7px 9px;
+   }
+
+ </style>
+{% endblock %}
+{% block nav %}
+    {% call navbar2() %}
+        {% if ses.loggedin %}
+        <li><a href="/smslogs">SMS Logs</a></li>
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Control Panel <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+                <li><a href="/smslogs">SMS Logs</a></li>
+                <li><a href="/reports" class="active">Reports</a></li>
+                <li><a href="/search">Search Requests</a></li>
+              <li class="divider"></li>
+              <li class="nav-header">Admin Panel</li>
+              <li><a href="/users">Users</a></li>
+              <li><a href="/settings">Settings</a></li>
+            </ul>
+        </li>
+        {% endif %}
+    {% endcall %}
+{% endblock %}
+
+
+{% block content %}
+    {{ err(ses.logon_err) }}
+    {{ err(err_msg)}}
+<p>
+    <br/>
+    <br/>
+</p>
+<div>
+<form class="form-signin" method="post" data-toggle="validator">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+  <h3 class="form-signin-heading">Sign in</h3>
+
+  <fieldset>
+
+    <div class="clearfix ">
+      <input id="id_username" name="username" type="text" class="input-block-level" placeholder="Username" required>
+
+    </div>
+
+    <div class="clearfix ">
+      <input id="id_password" name="password" type="password" class="input-block-level" placeholder="Password" required>
+
+    </div>
+
+
+    <!--<input type="submit" class="btn primary" value="Login">-->
+    <button type="submit" class="btn btn-primary">Login</button>
+
+    <!--<span class="pull-right" style="padding-top:7px;padding-right:20px;"><a href="/users/user/forget/">Forgot Password?</a></span>-->
+
+  </fieldset>
+  <input type="hidden" name="next" value="">
+</form>
+</div>
+{% endblock %}
+
+{% block scripts%}
+    {% call myscripts() %}
+    <script src="/static/js/bootstrap-validator/dist/validator.min.js"></script>
+    {% endcall %}
+{% endblock %}
